@@ -1,4 +1,5 @@
 using BusinessLogic.Dto.Product;
+using BusinessLogic.Enums;
 using BusinessLogic.Services.Interfaces;
 using DB.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -25,8 +26,12 @@ namespace WIApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete([FromRoute] int id)
         {
-            await productService.DeleteAsync(id);
-            return NoContent();
+            var result = await productService.DeleteAsync(id);
+            return result switch
+            {
+                ProductDeleteStatus.Ok => NoContent(),
+                ProductDeleteStatus.ProductCannotBeDeleted => StatusCode(StatusCodes.Status405MethodNotAllowed)
+            };
         }
 
         [HttpPost]

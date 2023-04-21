@@ -22,47 +22,23 @@ namespace BusinessLogic.Services
 
         public async Task<OrderAddResult> AddAsync(OrderAddDto order)
         {
-            bool produtQuantityValidationResult = await CheckOrderProductQuantityAsync(order.Items);
-            if (!produtQuantityValidationResult)
+            var products = await productRepository.GetAllByIdsAsync(order.Items.Select(x => x.ProductId).ToList());
+
+            bool allProductsExistValidationResult = await CheckOrderProductExistanceAsync(order.Items, products);
+            if (!allProductsExistValidationResult)
+            {
+                return OrderAddResult.ProductDoesNotExist;
+            }
+
+            bool productQuantityValidationResult = await CheckOrderProductQuantityAsync(order.Items, products);
+            if (!productQuantityValidationResult)
             {
                 return OrderAddResult.ProductQuantityValidationFailed;
             }
 
-            var products = await productRepository.GetAllByIdsAsync(order.Items.Select(x => x.ProductId).ToList());
-            decimal totalPrice = 0;
-            foreach (var orderItem in order.Items)
-            {
-                var product = products.Where(x => x.Id == orderItem.ProductId).SingleOrDefault();
-                if(product == null)
-                {
-                    return OrderAddResult.ProductDoesNotExist;
-                }
-                totalPrice += product.Price * product.Quantity;
-            }
-
-            var newOrder = new Order()
-            {
-                CustomerEmail = order.CustomerEmail,
-                Status = OrderStatus.Created,
-                CreateDate = DateTime.Now,
-                Items = new List<OrderItem>(),
-                TotalPrice = totalPrice
-            };
-
-            foreach (var orderItem in order.Items)
-            {
-                var product = products.Where(x => x.Id == orderItem.ProductId).Single();
-
-                newOrder.Items.Add(new OrderItem()
-                {
-                    Price = product.Price,
-                    ProductId = orderItem.ProductId,
-                    Quantity = orderItem.Quantity,
-                    TotalPrice = product.Price * orderItem.Quantity
-                });
-            }
+            var newOrder = CreateNewOrder(order, products);
             await orderRepository.AddAsync(newOrder);
-            await ModifyOrderProductsQuantityAsync(newOrder.Items, newOrder.Status);
+            await ModifyOrderProductsQuantityAsync(newOrder.Items, newOrder.Status, products);
             return OrderAddResult.Ok;
         }
 
@@ -83,7 +59,8 @@ namespace BusinessLogic.Services
             order.Status = orderChangeStatus.Status;
             await orderRepository.UpdateAsync(order);
 
-            await ModifyOrderProductsQuantityAsync(order.Items, orderChangeStatus.Status);
+            var products = await productRepository.GetAllByIdsAsync(order.Items.Select(x => x.ProductId).ToList());
+            await ModifyOrderProductsQuantityAsync(order.Items, orderChangeStatus.Status, products);
 
             return OrderChangeStatusResult.Ok;
         }
@@ -120,11 +97,24 @@ namespace BusinessLogic.Services
             return result;
         }
 
-        private async Task<bool> CheckOrderProductQuantityAsync(IEnumerable<OrderItemAddDto> orderItems)
+        private async Task<bool> CheckOrderProductExistanceAsync(IEnumerable<OrderItemAddDto> orderItems, IEnumerable<Product> products)
         {
             foreach (var orderItem in orderItems)
             {
-                var product = await productRepository.GetOneAsync(orderItem.ProductId);
+                var product = products.Where(x => x.Id == orderItem.ProductId).SingleOrDefault();
+                if (product == null)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private async Task<bool> CheckOrderProductQuantityAsync(IEnumerable<OrderItemAddDto> orderItems, IEnumerable<Product> products)
+        {
+            foreach (var orderItem in orderItems)
+            {
+                var product = products.Where(x => x.Id == orderItem.ProductId).Single();
                 if (product.Quantity - orderItem.Quantity < 0)
                 {
                     return false;
@@ -133,13 +123,13 @@ namespace BusinessLogic.Services
             return true;
         }
 
-        private async Task ModifyOrderProductsQuantityAsync(ICollection<OrderItem> orderItems, OrderStatus orderStatus)
+        private async Task ModifyOrderProductsQuantityAsync(ICollection<OrderItem> orderItems, OrderStatus orderStatus, IEnumerable<Product> products)
         {
             if (orderStatus == OrderStatus.Created || orderStatus == OrderStatus.Canceled)
             {
                 foreach (var orderItem in orderItems)
                 {
-                    var product = await productRepository.GetOneAsync(orderItem.ProductId);
+                    var product = products.Where(x => x.Id == orderItem.ProductId).Single();
                     if (orderStatus == OrderStatus.Canceled)
                     {
                         product.Quantity += orderItem.Quantity;
@@ -155,11 +145,51 @@ namespace BusinessLogic.Services
 
         private bool CanChangeOrderStatus(OrderStatus currentStatus, OrderStatus newStatus)
         {
-            if(currentStatus == OrderStatus.Created)
+            if (currentStatus == OrderStatus.Created)
             {
                 return newStatus == OrderStatus.Canceled || newStatus == OrderStatus.Finished;
             }
             return false;
+        }
+
+        private decimal GetTotalPrice(IEnumerable<OrderItemAddDto> orderItems, IEnumerable<Product> products)
+        {
+            var result = 0M;
+            foreach (var orderItem in orderItems)
+            {
+                var product = products.Where(x => x.Id == orderItem.ProductId).Single();
+                result += product.Price * product.Quantity;
+            }
+            return result;
+        }
+
+        private Order CreateNewOrder(OrderAddDto order, IEnumerable<Product> products)
+        {
+            decimal totalPrice = GetTotalPrice(order.Items, products);
+
+            var newOrder = new Order()
+            {
+                CustomerEmail = order.CustomerEmail,
+                Status = OrderStatus.Created,
+                CreateDate = DateTime.Now,
+                Items = new List<OrderItem>(),
+                TotalPrice = totalPrice
+            };
+
+            foreach (var orderItem in order.Items)
+            {
+                var product = products.Where(x => x.Id == orderItem.ProductId).Single();
+
+                newOrder.Items.Add(new OrderItem()
+                {
+                    Price = product.Price,
+                    ProductId = orderItem.ProductId,
+                    Quantity = orderItem.Quantity,
+                    TotalPrice = product.Price * orderItem.Quantity
+                });
+            }
+
+            return newOrder;
         }
     }
 }

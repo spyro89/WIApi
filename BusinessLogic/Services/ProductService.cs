@@ -1,5 +1,6 @@
 ﻿
 using BusinessLogic.Dto.Product;
+using BusinessLogic.Enums;
 using BusinessLogic.Repositories.Interfaces;
 using BusinessLogic.Services.Interfaces;
 using DB.Entities;
@@ -35,15 +36,15 @@ namespace BusinessLogic.Services
             return result;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<ProductDeleteStatus> DeleteAsync(int id)
         {
             bool canDeleteProduct = await CheckCanDeleteProductAsync(id);
             if (!canDeleteProduct)
             {
-                return canDeleteProduct;
+                return ProductDeleteStatus.ProductCannotBeDeleted;
             }
             await productRepository.DeleteAsync(id);
-            return true;
+            return ProductDeleteStatus.Ok;
         }
 
         public async Task<int> AddAsync(ProductAddEditDto product)
@@ -75,7 +76,7 @@ namespace BusinessLogic.Services
         private async Task<bool> CheckCanDeleteProductAsync(int id)
         {
             var existsAnyActiveOrderWithSelectedProduct = await orderRepository.ExistsAnyActiveOrderWithSelectedProductAsync(id);
-            return existsAnyActiveOrderWithSelectedProduct;
+            return !existsAnyActiveOrderWithSelectedProduct;
         }
     }
 }
