@@ -41,7 +41,7 @@ namespace WIApi.Controllers
             return Ok(result);
         }
 
-        [HttpPost("{id}")]
+        [HttpPut("{id}")]
         public async Task<ActionResult> Update([FromRoute] int id, [FromBody] ProductAddEditDto product)
         {
             var result = await productService.UpdateAsync(id, product);

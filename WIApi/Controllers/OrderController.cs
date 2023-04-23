@@ -22,7 +22,7 @@ namespace WIApi.Controllers
             return Ok(await orderService.GetListAsync());
         }
 
-        [HttpPut]
+        [HttpPost]
         public async Task<ActionResult> Add([FromBody] OrderAddDto order)
         {
             var result = await orderService.AddAsync(order);
