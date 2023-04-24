@@ -11,5 +11,14 @@ namespace DB.Entities
         public OrderStatus Status { get; set; }
 
         public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
+
+        public bool CanChangeOrderStatus(OrderStatus currentStatus, OrderStatus newStatus)
+        {
+            if (currentStatus == OrderStatus.Created)
+            {
+                return newStatus == OrderStatus.Canceled || newStatus == OrderStatus.Finished;
+            }
+            return false;
+        }
     }
 }

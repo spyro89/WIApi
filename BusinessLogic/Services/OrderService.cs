@@ -50,7 +50,7 @@ namespace BusinessLogic.Services
                 return OrderChangeStatusResult.OrderNotFound;
             }
 
-            var canChangeStatusResult = CanChangeOrderStatus(order.Status, orderChangeStatus.Status);
+            var canChangeStatusResult = order.CanChangeOrderStatus(order.Status, orderChangeStatus.Status);
             if (!canChangeStatusResult)
             {
                 return OrderChangeStatusResult.StatusChangeNotAllowed;
@@ -141,15 +141,6 @@ namespace BusinessLogic.Services
                     await productRepository.UpdateAsync(product);
                 }
             }
-        }
-
-        private bool CanChangeOrderStatus(OrderStatus currentStatus, OrderStatus newStatus)
-        {
-            if (currentStatus == OrderStatus.Created)
-            {
-                return newStatus == OrderStatus.Canceled || newStatus == OrderStatus.Finished;
-            }
-            return false;
         }
 
         private decimal GetTotalPrice(IEnumerable<OrderItemAddDto> orderItems, IEnumerable<Product> products)
