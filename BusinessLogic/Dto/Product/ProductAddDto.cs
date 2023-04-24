@@ -4,12 +4,15 @@ namespace BusinessLogic.Dto.Product
 {
     public class ProductAddEditDto
     {
-        [Required]
-        [StringLength(100)]
+        // wymagane
+        // max 100 znakow
+        X
         public string Name { get; set; }
-        [Range(0, short.MaxValue)]
-        public short Quantity { get; set; }
-        [Range(0, 1000000)]
+        // zakres od 0 do 1000
+        X
+        public X Quantity { get; set; }
+        // zakres od 0 do 1 000 000
+        X
         public decimal Price { get; set; }
     }
 }

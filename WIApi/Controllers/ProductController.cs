@@ -12,44 +12,44 @@ namespace WIApi.Controllers
     {
         private IProductService productService;
 
-        public ProductController(IProductService productService)
+        public ProductController(X)
         {
-            this.productService = productService;
+            X
         }
 
-        [HttpGet]
+        X
         public async Task<ActionResult<IEnumerable<Product>>> GetList()
         {
             return Ok(await productService.GetListAsync());
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete([FromRoute] int id)
+        X
+        public async Task<ActionResult> Delete(X int id)
         {
             var result = await productService.DeleteAsync(id);
             return result switch
             {
-                ProductDeleteStatus.Ok => NoContent(),
+                ProductDeleteStatus.Ok => X,
                 ProductDeleteStatus.ProductCannotBeDeleted => StatusCode(StatusCodes.Status405MethodNotAllowed)
             };
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Add([FromBody] ProductAddEditDto product)
+        X
+        public async Task<ActionResult> Add(X ProductAddEditDto product)
         {
             var result = await productService.AddAsync(product);
             return Ok(result);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] ProductAddEditDto product)
+        X
+        public async Task<ActionResult> Update(X int id, X ProductAddEditDto product)
         {
             var result = await productService.UpdateAsync(id, product);
             if (result)
             {
-                return NoContent();
+                return X;
             }
-            return NotFound();
+            return X;
         }
     }
 }

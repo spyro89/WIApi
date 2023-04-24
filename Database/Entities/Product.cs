@@ -2,10 +2,10 @@
 {
     public class Product
     {
-        public int Id { get; set; }
+        public X Id { get; set; }
         public string Name { get; set; }
-        public short Quantity { get; set; }
-        public decimal Price { get; set; }
-        public bool IsDeleted { get; set; }
+        public X Quantity { get; set; }
+        public X Price { get; set; }
+        public X IsDeleted { get; set; }
     }
 }

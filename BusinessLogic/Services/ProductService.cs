@@ -10,13 +10,11 @@ namespace BusinessLogic.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository productRepository;
-        private readonly IOrderRepository orderRepository;
+        //private readonly IOrderRepository orderRepository;
 
-        public ProductService(IProductRepository productRepository,
-            IOrderRepository orderRepository)
+        public ProductService(X)
         {
-            this.productRepository = productRepository;
-            this.orderRepository = orderRepository;
+            X
         }
 
         public async Task<IEnumerable<ProductDto>> GetListAsync()
@@ -25,13 +23,7 @@ namespace BusinessLogic.Services
             var result = new List<ProductDto>();
             foreach (var product in products)
             {
-                result.Add(new ProductDto()
-                {
-                    Id = product.Id,
-                    Name = product.Name,
-                    Price = product.Price,
-                    Quantity = product.Quantity
-                });
+                result.Add(X);
             }
             return result;
         }
@@ -49,12 +41,7 @@ namespace BusinessLogic.Services
 
         public async Task<int> AddAsync(ProductAddEditDto product)
         {
-            var newProduct = new Product()
-            {
-                Name = product.Name,
-                Price = product.Price,
-                Quantity = product.Quantity
-            };
+            var newProduct = X;
             await productRepository.AddAsync(newProduct);
             return newProduct.Id;
         }
@@ -66,17 +53,16 @@ namespace BusinessLogic.Services
             {
                 return false;
             }
-            existingProduct.Name = product.Name;
-            existingProduct.Price = product.Price;
-            existingProduct.Quantity = product.Quantity;
+            X
             await productRepository.UpdateAsync(existingProduct);
             return true;
         }
 
         private async Task<bool> CheckCanDeleteProductAsync(int id)
         {
-            var existsAnyActiveOrderWithSelectedProduct = await orderRepository.ExistsAnyActiveOrderWithSelectedProductAsync(id);
-            return !existsAnyActiveOrderWithSelectedProduct;
+            //var existsAnyActiveOrderWithSelectedProduct = await orderRepository.ExistsAnyActiveOrderWithSelectedProductAsync(id);
+            //return !existsAnyActiveOrderWithSelectedProduct;
+            return true;
         }
     }
 }
