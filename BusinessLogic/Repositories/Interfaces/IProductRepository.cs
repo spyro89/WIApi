@@ -4,8 +4,8 @@ namespace BusinessLogic.Repositories.Interfaces
 {
     public interface IProductRepository
     {
-        IEnumerable<Product> GetAllByIds(List<int> ids);
-        IEnumerable<Product> GetAll();
+        List<Product> GetAllByIds(List<int> ids);
+        List<Product> GetAll();
         Product GetOne(int id);
         void Update(Product product);
         void Add(Product product);

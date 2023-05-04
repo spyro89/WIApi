@@ -6,7 +6,7 @@ namespace BusinessLogic.Services.Interfaces
 {
     public interface IOrderService
     {
-        IEnumerable<OrderDto> GetList();
+        List<OrderDto> GetList();
         OrderAddResult Add(OrderAddDto order);
         OrderChangeStatusResult ChangeStatus(int id, OrderChangeStatusDto orderChangeStatus);
     }

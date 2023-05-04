@@ -18,7 +18,7 @@ namespace WIApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Product>> GetList()
+        public ActionResult<List<Product>> GetList()
         {
             return Ok(productService.GetList());
         }

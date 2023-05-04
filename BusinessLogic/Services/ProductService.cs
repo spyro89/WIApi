@@ -19,7 +19,7 @@ namespace BusinessLogic.Services
             this.orderRepository = orderRepository;
         }
 
-        public IEnumerable<ProductDto> GetList()
+        public List<ProductDto> GetList()
         {
             var products = productRepository.GetAll();
             var result = new List<ProductDto>();

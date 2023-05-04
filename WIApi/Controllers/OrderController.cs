@@ -17,7 +17,7 @@ namespace WIApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<OrderDto>> GetList()
+        public ActionResult<List<OrderDto>> GetList()
         {
             return Ok(orderService.GetList());
         }
