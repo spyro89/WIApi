@@ -1,13 +1,13 @@
-﻿//using DB.Entities;
+﻿using DB.Entities;
 
-//namespace BusinessLogic.Repositories.Interfaces
-//{
-//    public interface IOrderRepository
-//    {
-//        X GetAllAsync();
-//        X GetOneAsync(X id);
-//        X UpdateAsync(X order);
-//        X AddAsync(X order);
-//        X ExistsAnyActiveOrderWithSelectedProductAsync(X productId);
-//    }
-//}
+namespace BusinessLogic.Repositories.Interfaces
+{
+    public interface IOrderRepository
+    {
+        IEnumerable<Order> GetAll();
+        Order GetOne(int id);
+        void Update(Order order);
+        void Add(Order order);
+        bool ExistsAnyActiveOrderWithSelectedProduct(int productId);
+    }
+}

@@ -23,38 +23,38 @@ namespace BusinessLogic.Repositories
             }
         };
 
-        public X GetOneAsync(int id)
+        public Product GetOne(int id)
         {
-            return db.X;
+            return db.Where(x => x.Id == id && x.IsDeleted == false).SingleOrDefault();
         }
 
-        public X GetAllByIdsAsync(List<int> ids)
+        public IEnumerable<Product> GetAllByIds(List<int> ids)
         {
-            return db.X;
+            return db.Where(x => x.IsDeleted == false && ids.Contains(x.Id)).ToList();
         }
 
-        public X GetAllAsync()
+        public IEnumerable<Product> GetAll()
         {
-            return db.X);
+            return db.Where(x => x.IsDeleted == false).ToList();
         }
 
-        public X UpdateAsync(Product product)
+        public void  Update(Product product)
         {
-            // dlaczego tutaj nic nie ma?
+
         }
 
-        public X AddAsync(Product product)
+        public void Add(Product product)
         {
-            product.Id = db.X
-            db.X
+            product.Id = db.Max(x => (int?)x.Id).GetValueOrDefault(0) + 1;
+            db.Add(product);
         }
 
-        public X DeleteAsync(int id)
+        public void Delete(int id)
         {
-            var itemToDelete = X
+            var itemToDelete = GetOne(id);
             if (itemToDelete != null)
             {
-                itemToDelete.X = true;
+                itemToDelete.IsDeleted = true;
             }
         }
     }

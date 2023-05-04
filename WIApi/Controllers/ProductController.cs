@@ -12,44 +12,44 @@ namespace WIApi.Controllers
     {
         private IProductService productService;
 
-        public ProductController(X)
+        public ProductController(IProductService productService)
         {
-            X
+            this.productService = productService;
         }
 
-        X
-        public async Task<ActionResult<IEnumerable<Product>>> GetList()
+        [HttpGet]
+        public ActionResult<IEnumerable<Product>> GetList()
         {
-            return Ok(await productService.GetListAsync());
+            return Ok(productService.GetList());
         }
 
-        X
-        public async Task<ActionResult> Delete(X int id)
+        [HttpDelete("{id}")]
+        public ActionResult Delete([FromRoute] int id)
         {
-            var result = await productService.DeleteAsync(id);
+            var result = productService.Delete(id);
             return result switch
             {
-                ProductDeleteStatus.Ok => X,
+                ProductDeleteStatus.Ok => NoContent(),
                 ProductDeleteStatus.ProductCannotBeDeleted => StatusCode(StatusCodes.Status405MethodNotAllowed)
             };
         }
 
-        X
-        public async Task<ActionResult> Add(X ProductAddEditDto product)
+        [HttpPost]
+        public ActionResult Add([FromBody] ProductAddEditDto product)
         {
-            var result = await productService.AddAsync(product);
+            var result = productService.Add(product);
             return Ok(result);
         }
 
-        X
-        public async Task<ActionResult> Update(X int id, X ProductAddEditDto product)
+        [HttpPut("{id}")]
+        public ActionResult Update([FromRoute] int id, [FromBody] ProductAddEditDto product)
         {
-            var result = await productService.UpdateAsync(id, product);
+            var result = productService.Update(id, product);
             if (result)
             {
-                return X;
+                return NoContent();
             }
-            return X;
+            return NotFound();
         }
     }
 }

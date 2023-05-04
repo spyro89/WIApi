@@ -4,11 +4,11 @@ namespace BusinessLogic.Repositories.Interfaces
 {
     public interface IProductRepository
     {
-        X GetAllByIdsAsync(X ids);
-        X GetAllAsync();
-        X GetOneAsync(X id);
-        X UpdateAsync(X product);
-        X AddAsync(X product);
-        X DeleteAsync(X id);
+        IEnumerable<Product> GetAllByIds(List<int> ids);
+        IEnumerable<Product> GetAll();
+        Product GetOne(int id);
+        void Update(Product product);
+        void Add(Product product);
+        void Delete(int id);
     }
 }
