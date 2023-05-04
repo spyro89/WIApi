@@ -4,10 +4,10 @@ namespace BusinessLogic.Repositories.Interfaces
 {
     public interface IOrderRepository
     {
-        Task<IEnumerable<Order>> GetAllAsync();
-        Task<Order> GetOneAsync(int id);
-        Task UpdateAsync(Order order);
-        Task AddAsync(Order order);
-        Task<bool> ExistsAnyActiveOrderWithSelectedProductAsync(int productId);
+        IEnumerable<Order> GetAll();
+        Order GetOne(int id);
+        void Update(Order order);
+        void Add(Order order);
+        bool ExistsAnyActiveOrderWithSelectedProduct(int productId);
     }
 }

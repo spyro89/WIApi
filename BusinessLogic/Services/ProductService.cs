@@ -19,9 +19,9 @@ namespace BusinessLogic.Services
             this.orderRepository = orderRepository;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetListAsync()
+        public IEnumerable<ProductDto> GetList()
         {
-            var products = await productRepository.GetAllAsync();
+            var products = productRepository.GetAll();
             var result = new List<ProductDto>();
             foreach (var product in products)
             {
@@ -36,18 +36,18 @@ namespace BusinessLogic.Services
             return result;
         }
 
-        public async Task<ProductDeleteStatus> DeleteAsync(int id)
+        public ProductDeleteStatus Delete(int id)
         {
-            bool canDeleteProduct = await CheckCanDeleteProductAsync(id);
+            bool canDeleteProduct = CheckCanDeleteProduct(id);
             if (!canDeleteProduct)
             {
                 return ProductDeleteStatus.ProductCannotBeDeleted;
             }
-            await productRepository.DeleteAsync(id);
+            productRepository.Delete(id);
             return ProductDeleteStatus.Ok;
         }
 
-        public async Task<int> AddAsync(ProductAddEditDto product)
+        public int Add(ProductAddEditDto product)
         {
             var newProduct = new Product()
             {
@@ -55,13 +55,13 @@ namespace BusinessLogic.Services
                 Price = product.Price,
                 Quantity = product.Quantity
             };
-            await productRepository.AddAsync(newProduct);
+            productRepository.Add(newProduct);
             return newProduct.Id;
         }
 
-        public async Task<bool> UpdateAsync(int id, ProductAddEditDto product)
+        public bool Update(int id, ProductAddEditDto product)
         {
-            var existingProduct = await productRepository.GetOneAsync(id);
+            var existingProduct = productRepository.GetOne(id);
             if (existingProduct == null)
             {
                 return false;
@@ -69,13 +69,13 @@ namespace BusinessLogic.Services
             existingProduct.Name = product.Name;
             existingProduct.Price = product.Price;
             existingProduct.Quantity = product.Quantity;
-            await productRepository.UpdateAsync(existingProduct);
+            productRepository.Update(existingProduct);
             return true;
         }
 
-        private async Task<bool> CheckCanDeleteProductAsync(int id)
+        private bool CheckCanDeleteProduct(int id)
         {
-            var existsAnyActiveOrderWithSelectedProduct = await orderRepository.ExistsAnyActiveOrderWithSelectedProductAsync(id);
+            var existsAnyActiveOrderWithSelectedProduct = orderRepository.ExistsAnyActiveOrderWithSelectedProduct(id);
             return !existsAnyActiveOrderWithSelectedProduct;
         }
     }
