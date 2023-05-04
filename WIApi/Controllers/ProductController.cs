@@ -18,7 +18,7 @@ namespace WIApi.Controllers
         }
 
         [HttpGet]
- 	//[HttpPost]
+ 	    //[HttpPost]
         //[HttpPut]
         //[HttpDelete]
         //[HttpPatch]
@@ -27,6 +27,8 @@ namespace WIApi.Controllers
             return Ok(productService.GetList());
         }
 
+        // adresURL/Product/Delete/1
+        // adresURL/Product/Delete/2
         [X("{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
@@ -45,6 +47,8 @@ namespace WIApi.Controllers
             return Ok(result);
         }
 
+        // adresURL/Product/Update/1
+        // adresURL/Product/Update/2
         [X("{id}")]
         public ActionResult Update([FromRoute] int id, [FromBody] ProductAddEditDto product)
         {
