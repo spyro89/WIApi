@@ -41,7 +41,7 @@ namespace BusinessLogic.Repositories
             return db.Where(x => x.Id == id).SingleOrDefault();
         }
 
-        public IEnumerable<Order> GetAll()
+        public List<Order> GetAll()
         {
             return db.ToList();
         }

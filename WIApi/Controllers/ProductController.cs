@@ -18,11 +18,11 @@ namespace WIApi.Controllers
         }
 
         [HttpGet]
-        //[HttpPost]
+ 	//[HttpPost]
         //[HttpPut]
         //[HttpDelete]
         //[HttpPatch]
-        public ActionResult<IEnumerable<Product>> GetList()
+        public ActionResult<List<Product>> GetList()
         {
             return Ok(productService.GetList());
         }

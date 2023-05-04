@@ -1,11 +1,11 @@
-﻿//namespace BusinessLogic.Dto.Order
-//{
-//    public class OrderItemDto
-//    {
-//        public X Id { get; set; }
-//        public X ProductId { get; set; }
-//        public X Quantity { get; set; }
-//        public X Price { get; set; }
-//        public X TotalPrice { get; set; }
-//    }
-//}
+﻿namespace BusinessLogic.Dto.Order
+{
+    public class OrderItemDto
+    {
+        public int Id { get; set; }
+        public int ProductId { get; set; }
+        public short Quantity { get; set; }
+        public decimal Price { get; set; }
+        public decimal TotalPrice { get; set; }
+    }
+}

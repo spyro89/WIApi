@@ -65,7 +65,7 @@ namespace BusinessLogic.Services
             return OrderChangeStatusResult.Ok;
         }
 
-        public IEnumerable<OrderDto> GetList()
+        public List<OrderDto> GetList()
         {
             var orders = orderRepository.GetAll();
             var result = new List<OrderDto>();
@@ -97,7 +97,7 @@ namespace BusinessLogic.Services
             return result;
         }
 
-        private bool CheckOrderProductExistance(IEnumerable<OrderItemAddDto> orderItems, IEnumerable<Product> products)
+        private bool CheckOrderProductExistance(List<OrderItemAddDto> orderItems, List<Product> products)
         {
             foreach (var orderItem in orderItems)
             {
@@ -110,7 +110,7 @@ namespace BusinessLogic.Services
             return true;
         }
 
-        private bool CheckOrderProductQuantity(IEnumerable<OrderItemAddDto> orderItems, IEnumerable<Product> products)
+        private bool CheckOrderProductQuantity(List<OrderItemAddDto> orderItems, List<Product> products)
         {
             foreach (var orderItem in orderItems)
             {
@@ -123,7 +123,7 @@ namespace BusinessLogic.Services
             return true;
         }
 
-        private void ModifyOrderProductsQuantity(ICollection<OrderItem> orderItems, OrderStatus orderStatus, IEnumerable<Product> products)
+        private void ModifyOrderProductsQuantity(ICollection<OrderItem> orderItems, OrderStatus orderStatus, List<Product> products)
         {
             if (orderStatus == OrderStatus.Created || orderStatus == OrderStatus.Canceled)
             {
@@ -143,7 +143,7 @@ namespace BusinessLogic.Services
             }
         }
 
-        private decimal GetTotalPrice(IEnumerable<OrderItemAddDto> orderItems, IEnumerable<Product> products)
+        private decimal GetTotalPrice(List<OrderItemAddDto> orderItems, List<Product> products)
         {
             var result = 0M;
             foreach (var orderItem in orderItems)
@@ -154,7 +154,7 @@ namespace BusinessLogic.Services
             return result;
         }
 
-        private Order CreateNewOrder(OrderAddDto order, IEnumerable<Product> products)
+        private Order CreateNewOrder(OrderAddDto order, List<Product> products)
         {
             decimal totalPrice = GetTotalPrice(order.Items, products);
 

@@ -6,13 +6,14 @@ namespace BusinessLogic.Dto.Product
     {
         // wymagane
         // max 100 znakow
-        X
+        [Required]
+        [StringLength(100)]
         public string Name { get; set; }
         // zakres od 0 do 1000
-        X
-        public X Quantity { get; set; }
+        [Range(0, 1000)]
+        public short Quantity { get; set; }
         // zakres od 0 do 1 000 000
-        X
+        [Range(0, 1000000)]
         public decimal Price { get; set; }
     }
 }

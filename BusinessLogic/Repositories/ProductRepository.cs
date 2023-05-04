@@ -28,12 +28,12 @@ namespace BusinessLogic.Repositories
             return db.Where(x => x.Id == id && x.IsDeleted == false).SingleOrDefault();
         }
 
-        public IEnumerable<Product> GetAllByIds(List<int> ids)
+        public List<Product> GetAllByIds(List<int> ids)
         {
             return db.Where(x => x.IsDeleted == false && ids.Contains(x.Id)).ToList();
         }
 
-        public IEnumerable<Product> GetAll()
+        public List<Product> GetAll()
         {
             return db.Where(x => x.IsDeleted == false).ToList();
         }
