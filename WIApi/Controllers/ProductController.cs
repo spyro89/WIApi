@@ -18,12 +18,16 @@ namespace WIApi.Controllers
         }
 
         [HttpGet]
+        //[HttpPost]
+        //[HttpPut]
+        //[HttpDelete]
+        //[HttpPatch]
         public ActionResult<IEnumerable<Product>> GetList()
         {
             return Ok(productService.GetList());
         }
 
-        [HttpDelete("{id}")]
+        [X("{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
             var result = productService.Delete(id);
@@ -34,14 +38,14 @@ namespace WIApi.Controllers
             };
         }
 
-        [HttpPost]
+        [X]
         public ActionResult Add([FromBody] ProductAddEditDto product)
         {
             var result = productService.Add(product);
             return Ok(result);
         }
 
-        [HttpPut("{id}")]
+        [X("{id}")]
         public ActionResult Update([FromRoute] int id, [FromBody] ProductAddEditDto product)
         {
             var result = productService.Update(id, product);
