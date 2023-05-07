@@ -17,15 +17,15 @@ namespace WIApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderDto>>> GetList()
+        public ActionResult<List<OrderDto>> GetList()
         {
-            return Ok(await orderService.GetListAsync());
+            return Ok(orderService.GetList());
         }
 
         [HttpPost]
-        public async Task<ActionResult> Add([FromBody] OrderAddDto order)
+        public ActionResult Add([FromBody] OrderAddDto order)
         {
-            var result = await orderService.AddAsync(order);
+            var result = orderService.Add(order);
             return result switch
             {
                 OrderAddResult.Ok => NoContent(),
@@ -35,9 +35,9 @@ namespace WIApi.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult> ChangeStatus([FromRoute] int id, [FromBody] OrderChangeStatusDto orderChangeStatus)
+        public ActionResult ChangeStatus([FromRoute] int id, [FromBody] OrderChangeStatusDto orderChangeStatus)
         {
-            var result = await orderService.ChangeStatusAsync(id, orderChangeStatus);
+            var result = orderService.ChangeStatus(id, orderChangeStatus);
             return result switch
             {
                 OrderChangeStatusResult.Ok => NoContent(),

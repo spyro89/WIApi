@@ -6,8 +6,8 @@ namespace BusinessLogic.Services.Interfaces
 {
     public interface IOrderService
     {
-        Task<IEnumerable<OrderDto>> GetListAsync();
-        Task<OrderAddResult> AddAsync(OrderAddDto order);
-        Task<OrderChangeStatusResult> ChangeStatusAsync(int id, OrderChangeStatusDto orderChangeStatus);
+        List<OrderDto> GetList();
+        OrderAddResult Add(OrderAddDto order);
+        OrderChangeStatusResult ChangeStatus(int id, OrderChangeStatusDto orderChangeStatus);
     }
 }

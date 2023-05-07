@@ -18,15 +18,15 @@ namespace WIApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetList()
+        public ActionResult<List<Product>> GetList()
         {
-            return Ok(await productService.GetListAsync());
+            return Ok(productService.GetList());
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete([FromRoute] int id)
+        public ActionResult Delete([FromRoute] int id)
         {
-            var result = await productService.DeleteAsync(id);
+            var result = productService.Delete(id);
             return result switch
             {
                 ProductDeleteStatus.Ok => NoContent(),
@@ -35,16 +35,16 @@ namespace WIApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Add([FromBody] ProductAddEditDto product)
+        public ActionResult Add([FromBody] ProductAddEditDto product)
         {
-            var result = await productService.AddAsync(product);
+            var result = productService.Add(product);
             return Ok(result);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] ProductAddEditDto product)
+        public ActionResult Update([FromRoute] int id, [FromBody] ProductAddEditDto product)
         {
-            var result = await productService.UpdateAsync(id, product);
+            var result = productService.Update(id, product);
             if (result)
             {
                 return NoContent();

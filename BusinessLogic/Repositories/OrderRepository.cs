@@ -36,28 +36,28 @@ namespace BusinessLogic.Repositories
             }
         };
 
-        public async Task<Order> GetOneAsync(int id)
+        public Order GetOne(int id)
         {
             return db.Where(x => x.Id == id).SingleOrDefault();
         }
 
-        public async Task<IEnumerable<Order>> GetAllAsync()
+        public List<Order> GetAll()
         {
             return db.ToList();
         }
 
-        public async Task AddAsync(Order order)
+        public void Add(Order order)
         {
             order.Id = db.Max(x => (int?)x.Id).GetValueOrDefault(0) + 1;
             db.Add(order);
         }
 
-        public async Task UpdateAsync(Order order)
+        public void Update(Order order)
         {
 
         }
 
-        public async Task<bool> ExistsAnyActiveOrderWithSelectedProductAsync(int productId)
+        public bool ExistsAnyActiveOrderWithSelectedProduct(int productId)
         {
             return db.Where(x => x.Status == OrderStatus.Created && x.Items.Where(x => x.ProductId == productId).Any())
                 .Any();

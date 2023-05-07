@@ -20,31 +20,31 @@ namespace BusinessLogic.Services
             this.productRepository = productRepository;
         }
 
-        public async Task<OrderAddResult> AddAsync(OrderAddDto order)
+        public OrderAddResult Add(OrderAddDto order)
         {
-            var products = await productRepository.GetAllByIdsAsync(order.Items.Select(x => x.ProductId).ToList());
+            var products = productRepository.GetAllByIds(order.Items.Select(x => x.ProductId).ToList());
 
-            bool allProductsExistValidationResult = await CheckOrderProductExistanceAsync(order.Items, products);
+            bool allProductsExistValidationResult = CheckOrderProductExistance(order.Items, products);
             if (!allProductsExistValidationResult)
             {
                 return OrderAddResult.ProductDoesNotExist;
             }
 
-            bool productQuantityValidationResult = await CheckOrderProductQuantityAsync(order.Items, products);
+            bool productQuantityValidationResult = CheckOrderProductQuantity(order.Items, products);
             if (!productQuantityValidationResult)
             {
                 return OrderAddResult.ProductQuantityValidationFailed;
             }
 
             var newOrder = CreateNewOrder(order, products);
-            await orderRepository.AddAsync(newOrder);
-            await ModifyOrderProductsQuantityAsync(newOrder.Items, newOrder.Status, products);
+            orderRepository.Add(newOrder);
+            ModifyOrderProductsQuantity(newOrder.Items, newOrder.Status, products);
             return OrderAddResult.Ok;
         }
 
-        public async Task<OrderChangeStatusResult> ChangeStatusAsync(int id, OrderChangeStatusDto orderChangeStatus)
+        public OrderChangeStatusResult ChangeStatus(int id, OrderChangeStatusDto orderChangeStatus)
         {
-            var order = await orderRepository.GetOneAsync(id);
+            var order = orderRepository.GetOne(id);
             if (order == null)
             {
                 return OrderChangeStatusResult.OrderNotFound;
@@ -57,17 +57,17 @@ namespace BusinessLogic.Services
             }
 
             order.Status = orderChangeStatus.Status;
-            await orderRepository.UpdateAsync(order);
+            orderRepository.Update(order);
 
-            var products = await productRepository.GetAllByIdsAsync(order.Items.Select(x => x.ProductId).ToList());
-            await ModifyOrderProductsQuantityAsync(order.Items, orderChangeStatus.Status, products);
+            var products = productRepository.GetAllByIds(order.Items.Select(x => x.ProductId).ToList());
+            ModifyOrderProductsQuantity(order.Items, orderChangeStatus.Status, products);
 
             return OrderChangeStatusResult.Ok;
         }
 
-        public async Task<IEnumerable<OrderDto>> GetListAsync()
+        public List<OrderDto> GetList()
         {
-            var orders = await orderRepository.GetAllAsync();
+            var orders = orderRepository.GetAll();
             var result = new List<OrderDto>();
             foreach (var order in orders)
             {
@@ -97,7 +97,7 @@ namespace BusinessLogic.Services
             return result;
         }
 
-        private async Task<bool> CheckOrderProductExistanceAsync(IEnumerable<OrderItemAddDto> orderItems, IEnumerable<Product> products)
+        private bool CheckOrderProductExistance(List<OrderItemAddDto> orderItems, List<Product> products)
         {
             foreach (var orderItem in orderItems)
             {
@@ -110,7 +110,7 @@ namespace BusinessLogic.Services
             return true;
         }
 
-        private async Task<bool> CheckOrderProductQuantityAsync(IEnumerable<OrderItemAddDto> orderItems, IEnumerable<Product> products)
+        private bool CheckOrderProductQuantity(List<OrderItemAddDto> orderItems, List<Product> products)
         {
             foreach (var orderItem in orderItems)
             {
@@ -123,7 +123,7 @@ namespace BusinessLogic.Services
             return true;
         }
 
-        private async Task ModifyOrderProductsQuantityAsync(ICollection<OrderItem> orderItems, OrderStatus orderStatus, IEnumerable<Product> products)
+        private void ModifyOrderProductsQuantity(ICollection<OrderItem> orderItems, OrderStatus orderStatus, List<Product> products)
         {
             if (orderStatus == OrderStatus.Created || orderStatus == OrderStatus.Canceled)
             {
@@ -138,12 +138,12 @@ namespace BusinessLogic.Services
                     {
                         product.Quantity -= orderItem.Quantity;
                     }
-                    await productRepository.UpdateAsync(product);
+                    productRepository.Update(product);
                 }
             }
         }
 
-        private decimal GetTotalPrice(IEnumerable<OrderItemAddDto> orderItems, IEnumerable<Product> products)
+        private decimal GetTotalPrice(List<OrderItemAddDto> orderItems, List<Product> products)
         {
             var result = 0M;
             foreach (var orderItem in orderItems)
@@ -154,7 +154,7 @@ namespace BusinessLogic.Services
             return result;
         }
 
-        private Order CreateNewOrder(OrderAddDto order, IEnumerable<Product> products)
+        private Order CreateNewOrder(OrderAddDto order, List<Product> products)
         {
             decimal totalPrice = GetTotalPrice(order.Items, products);
 
