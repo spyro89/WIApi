@@ -9,5 +9,6 @@ namespace DB
         DbSet<Order> Orders { get; }
         DbSet<OrderItem> OrderItems { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        int SaveChanges();
     }
 }

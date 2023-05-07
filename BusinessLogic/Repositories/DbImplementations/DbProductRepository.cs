@@ -1,7 +1,6 @@
 ﻿using BusinessLogic.Repositories.Interfaces;
 using DB;
 using DB.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Repositories.DbImplementations
 {
@@ -14,49 +13,49 @@ namespace BusinessLogic.Repositories.DbImplementations
             _context=context;
         }
 
-        public async Task AddAsync(Product product)
+        public void Add(Product product)
         {
-            await _context.Products.AddAsync(product);
-            await _context.SaveChangesAsync();
+            _context.Products.Add(product);
+            _context.SaveChanges();
         }
 
-        public async Task DeleteAsync(int id)
+        public void Delete(int id)
         {
-            var product = await _context.Products
-                .SingleOrDefaultAsync(x => x.Id == id && x.IsDeleted == false);
+            var product = _context.Products
+                .SingleOrDefault(x => x.Id == id && x.IsDeleted == false);
 
             if (product is null) return;
 
             product.IsDeleted = true;
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
-        public async Task<IEnumerable<Product>> GetAllAsync()
+        public List<Product> GetAll()
         {
-            return await _context.Products
+            return _context.Products
                 .Where(x => x.IsDeleted == false)
-                .ToListAsync();
+                .ToList();
         }
 
-        public async Task<IEnumerable<Product>> GetAllByIdsAsync(List<int> ids)
+        public List<Product> GetAllByIds(List<int> ids)
         {
-            return await _context.Products
+            return _context.Products
                 .Where(x => x.IsDeleted == false)
                 .Where(x => ids.Contains(x.Id))
-                .ToListAsync();
+                .ToList();
         }
 
-        public async Task<Product> GetOneAsync(int id)
+        public Product GetOne(int id)
         {
-            return await _context.Products
-                .SingleOrDefaultAsync(x => x.Id == id && x.IsDeleted == false);
+            return _context.Products
+                .SingleOrDefault(x => x.Id == id && x.IsDeleted == false);
         }
 
-        public async Task UpdateAsync(Product product)
+        public void Update(Product product)
         {
             _context.Products.Update(product);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
     }
 }

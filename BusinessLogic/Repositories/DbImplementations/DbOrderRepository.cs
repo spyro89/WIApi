@@ -14,38 +14,38 @@ namespace BusinessLogic.Repositories.DbImplementations
             _context=context;
         }
 
-        public async Task AddAsync(Order order)
+        public void Add(Order order)
         {
-            await _context.Orders.AddAsync(order);
-            await _context.SaveChangesAsync();
+            _context.Orders.Add(order);
+            _context.SaveChanges();
         }
 
-        public async Task<bool> ExistsAnyActiveOrderWithSelectedProductAsync(int productId)
+        public bool ExistsAnyActiveOrderWithSelectedProduct(int productId)
         {
-            return await _context.OrderItems
-                .Where(x => x.ProductId == productId 
+            return _context.OrderItems
+                .Where(x => x.ProductId == productId
                     && x.Order.Status == DB.Enums.OrderStatus.Created)
-                .AnyAsync();
+                .Any();
         }
 
-        public async Task<IEnumerable<Order>> GetAllAsync()
+        public List<Order> GetAll()
         {
-            return await _context.Orders
+            return _context.Orders
                 .Include(x => x.Items)
-                .ToListAsync();
+                .ToList();
         }
 
-        public async Task<Order> GetOneAsync(int id)
+        public Order GetOne(int id)
         {
-            return await _context.Orders
+            return _context.Orders
                 .Include(x => x.Items)
-                .SingleOrDefaultAsync(x => x.Id == id);
+                .SingleOrDefault(x => x.Id == id);
         }
 
-        public async Task UpdateAsync(Order order)
+        public void Update(Order order)
         {
             _context.Orders.Update(order);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
     }
 }
