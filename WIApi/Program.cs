@@ -1,4 +1,3 @@
-using BusinessLogic.Repositories;
 using BusinessLogic.Repositories.DbImplementations;
 using BusinessLogic.Repositories.Interfaces;
 using BusinessLogic.Services;
@@ -25,6 +24,9 @@ namespace WIApi
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Orders"));
             });
 
+            var context = builder.Services.BuildServiceProvider().GetService<WIApiContext>();
+            context.Database.Migrate();
+
             builder.Services.AddControllers();
 
             var app = builder.Build();
@@ -34,7 +36,6 @@ namespace WIApi
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
