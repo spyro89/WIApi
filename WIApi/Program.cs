@@ -13,6 +13,12 @@ namespace WIApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "WIApi.xml"));
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "DB.xml"));
+            });
+
             // Add services to the container.
             builder.Services.AddScoped<IProductRepository, DbProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
@@ -30,6 +36,17 @@ namespace WIApi
             builder.Services.AddControllers();
 
             var app = builder.Build();
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.DocumentTitle = "WIApi";
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                    options.RoutePrefix = string.Empty;
+                });
+            }
 
             // Configure the HTTP request pipeline.
 

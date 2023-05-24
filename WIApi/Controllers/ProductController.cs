@@ -17,13 +17,26 @@ namespace WIApi.Controllers
             this.productService = productService;
         }
 
+        /// <summary>
+        /// Returns list of products
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult<List<Product>> GetList()
         {
             return Ok(productService.GetList());
         }
 
+        /// <summary>
+        /// Deletes product of given id
+        /// </summary>
+        /// <param name="id">Id of product</param>
+        /// <returns></returns>
+        /// <response code="204">When successfully deleted</response>
+        /// <response code="405">When failed to delete OR is already ordered</response>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status405MethodNotAllowed)]
         public ActionResult Delete([FromRoute] int id)
         {
             var result = productService.Delete(id);
